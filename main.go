@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -12,18 +13,22 @@ func init() {
 	tmpl = template.Must(template.ParseGlob("templates/*.html"))
 }
 
-func start(w http.ResponseWriter, r *http.Request) {
+func entry(w http.ResponseWriter, r *http.Request) {
 
 	err := tmpl.ExecuteTemplate(w, "index.html", nil)
 	if err != nil {
 		return
+	}
+
+	if r.URL.Path != "/" {
+		fmt.Printf(r.URL.Path)
 	}
 }
 
 func main() {
 	fileServer := http.FileServer(http.Dir("assets"))
 	http.Handle("/assets/", http.StripPrefix("/assets", fileServer))
-	http.HandleFunc("/", start)
+	http.HandleFunc("/", entry)
 	log.Fatal(http.ListenAndServe(":8081", nil))
 
 }
