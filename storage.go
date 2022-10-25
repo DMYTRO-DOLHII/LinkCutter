@@ -1,5 +1,7 @@
 package main
 
+import "fmt"
+
 type Storage struct {
 	storage map[string]string
 }
@@ -16,4 +18,9 @@ func findURL(storage *Storage, key string) string {
 	}
 
 	return ""
+
+}
+
+func printStorage(storage *Storage) {
+	fmt.Println(storage)
 }
