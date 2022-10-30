@@ -25,24 +25,45 @@ func entry(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method == "GET" {
 		// TODO Find a way to delete particular substring @Dmytro-Dolhii
-		get := strings.ReplaceAll(r.URL.Path, "/favicon.ico", "")
-		get = strings.ReplaceAll(get, "/", "")
+		path := strings.TrimLeft(strings.TrimRight(r.URL.Path, "/favicon.ico"), "/")
 
-		url := findURL(&storage, get)
-		fmt.Println(url)
+		if path == "" {
+			return
+		} else {
+			fmt.Println(path)
+
+			if storage.exist(path) {
+				w.Header().Set("Content-Type", "application/json")
+				w.Write([]byte(storage.findURL(path)))
+			} else {
+				return
+			}
+		}
 	}
 
 	if r.Method == "POST" {
 		r.ParseForm()
 
 		if r.Form.Get("url") != "" {
+			// TODO Find a way to send response and handle in via JavaScript
+
+			if storage.exist(r.Form.Get("url")) {
+				// TODO Send null or smth like that if url already exists
+				return
+			}
+
 			gen := generate()
-			put(&storage, gen, r.Form.Get("url"))
-			printStorage(&storage)
+
+			storage.put(gen, r.Form.Get("url"))
+
+			w.Header().Set("Content-Type", "application/json")
+
+			w.Write([]byte(gen))
 		} else {
 			log.Printf("There is not such a parameter...")
 		}
 	}
+
 }
 
 func main() {
