@@ -27,14 +27,17 @@ func entry(w http.ResponseWriter, r *http.Request) {
 		// TODO Find a way to delete particular substring @Dmytro-Dolhii
 		path := strings.TrimLeft(strings.TrimRight(r.URL.Path, "/favicon.ico"), "/")
 
+		//fmt.Printf("Path is : " + path + "\n")
+
 		if path == "" {
 			return
 		} else {
-			fmt.Println(path)
-
 			if storage.exist(path) {
+				fmt.Println("Finding...")
 				w.Header().Set("Content-Type", "application/json")
-				w.Write([]byte(storage.findURL(path)))
+				url := storage.findURL(path)
+				w.Write([]byte(url))
+				fmt.Printf("Found %s\n", url)
 			} else {
 				return
 			}
@@ -45,7 +48,6 @@ func entry(w http.ResponseWriter, r *http.Request) {
 		r.ParseForm()
 
 		if r.Form.Get("url") != "" {
-			// TODO Find a way to send response and handle in via JavaScript
 
 			if storage.exist(r.Form.Get("url")) {
 				// TODO Send null or smth like that if url already exists

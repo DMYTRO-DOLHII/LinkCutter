@@ -23,7 +23,7 @@ func (storage *Storage) findURL(key string) string {
 
 func (storage *Storage) exist(url string) bool {
 	for k, _ := range storage.storage {
-		if storage.storage[k] == url {
+		if k == url {
 			return true
 		}
 	}
