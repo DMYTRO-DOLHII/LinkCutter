@@ -1,11 +1,9 @@
 package main
 
 import (
-	"fmt"
 	"html/template"
 	"log"
 	"net/http"
-	"strings"
 )
 
 var tmpl *template.Template
@@ -21,27 +19,6 @@ func entry(w http.ResponseWriter, r *http.Request) {
 	err := tmpl.ExecuteTemplate(w, "index.html", nil)
 	if err != nil {
 		return
-	}
-
-	if r.Method == "GET" {
-		// TODO Find a way to delete particular substring @Dmytro-Dolhii
-		path := strings.TrimLeft(strings.TrimRight(r.URL.Path, "/favicon.ico"), "/")
-
-		//fmt.Printf("Path is : " + path + "\n")
-
-		if path == "" {
-			return
-		} else {
-			if storage.exist(path) {
-				fmt.Println("Finding...")
-				w.Header().Set("Content-Type", "application/json")
-				url := storage.findURL(path)
-				w.Write([]byte(url))
-				fmt.Printf("Found %s\n", url)
-			} else {
-				return
-			}
-		}
 	}
 
 	if r.Method == "POST" {
@@ -61,6 +38,16 @@ func entry(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("Content-Type", "application/json")
 
 			w.Write([]byte(gen))
+		} else if r.Form.Get("phrase") != "" {
+			path := r.Form.Get("phrase")
+
+			if storage.exist(path) {
+				w.Header().Set("Content-Type", "application/json")
+				url := storage.findURL(path)
+				w.Write([]byte(url))
+			} else {
+				return
+			}
 		} else {
 			log.Printf("There is not such a parameter...")
 		}
