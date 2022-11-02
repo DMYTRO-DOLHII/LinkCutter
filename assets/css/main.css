@@ -86,3 +86,29 @@ input:focus {
     color: #0f0c29;
 }
 
+.copy{
+    margin-top: 50px;
+    cursor: pointer;
+}
+
+#clipboard{
+    margin-top: 50px;
+    height: 50px;
+    width: 500px;
+    border-radius: 5px;
+    border: 2px solid white;
+    margin: 5px;
+    background: none;
+    color: white;
+    font-family: 'Lexend Deca', sans-serif;
+    padding-left: 10px;
+    transition: .3s;
+}
+
+#clipboard:hover{
+    border: 2px solid rgb(136, 250, 144);
+}
+
+#clipboard:focus{
+    border: 2px solid rgb(29, 207, 41);
+}
