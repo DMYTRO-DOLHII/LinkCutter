@@ -5,7 +5,7 @@ let copy = document.getElementById("clipboard")
 let text = document.getElementById("copy-text")
 
 
-copy.addEventListener("click", function (e) {
+copy.addEventListener("click", function () {
     try {
         navigator.clipboard.writeText(text.innerHTML);
     } catch (err) {
@@ -23,7 +23,7 @@ copy.addEventListener("click", function (e) {
 })
 
 
-cut.addEventListener("click", function (e) {
+cut.addEventListener("click", function () {
     const xhr = new XMLHttpRequest();
     xhr.open("POST", '/', true);
 
@@ -40,6 +40,33 @@ cut.addEventListener("click", function (e) {
     xhr.send(data);
 })
 
+setup.addEventListener("click", function () {
+
+    let value = prompt("Enter a name for your link : ", "")
+    if (value == null) {
+        alert("Error, a name can not be null")
+    } else {
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", '/', true);
+
+        data = "url=" + input.value + "&name=" + value
+
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+        xhr.onreadystatechange = () => { // Call a function when the state changes.
+            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                res = xhr.responseText.substring(xhr.responseText.indexOf("</html>") + "</html>".length)
+                if (res === "") {
+                    alert("Error! Current path already exists")
+                } else {
+                    text.innerHTML = "localhost:8081/" + value
+                }
+            }
+        }
+        xhr.send(data);
+    }
+})
+
 const xhr = new XMLHttpRequest();
 xhr.open("POST", '/', true);
 
@@ -48,7 +75,7 @@ xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 xhr.onreadystatechange = () => { // Call a function when the state changes.
     if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
         res = xhr.responseText.substring(xhr.responseText.indexOf("</html>") + "</html>".length)
-        if (res != "") {
+        if (res !== "") {
             window.location.href = res
         }
     }

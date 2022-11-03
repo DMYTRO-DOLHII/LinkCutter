@@ -24,7 +24,13 @@ func entry(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "POST" {
 		r.ParseForm()
 
-		if r.Form.Get("url") != "" {
+		if r.Form.Get("url") != "" && r.Form.Get("name") != "" {
+			if storage.exist(r.Form.Get("name")) {
+				return
+			}
+			storage.put(r.Form.Get("name"), r.Form.Get("url"))
+			w.Write([]byte(r.Form.Get("name")))
+		} else if r.Form.Get("url") != "" {
 
 			if storage.exist(r.Form.Get("url")) {
 				// TODO Send null or smth like that if url already exists
