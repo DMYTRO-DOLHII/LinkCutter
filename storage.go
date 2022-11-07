@@ -21,9 +21,29 @@ func (storage *Storage) findURL(key string) string {
 
 }
 
-func (storage *Storage) exist(url string) bool {
+func (storage *Storage) getKey(url string) string {
+	for k, v := range storage.storage {
+		if v == url {
+			return k
+		}
+	}
+
+	return ""
+}
+
+func (storage *Storage) existURL(url string) bool {
+	for _, v := range storage.storage {
+		if v == url {
+			return true
+		}
+	}
+
+	return false
+}
+
+func (storage *Storage) existKey(key string) bool {
 	for k, _ := range storage.storage {
-		if k == url {
+		if k == key {
 			return true
 		}
 	}
