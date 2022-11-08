@@ -1,3 +1,6 @@
+const xhr = new XMLHttpRequest();
+let result
+
 let input = document.getElementById("url")
 let cut = document.getElementById("cut")
 let setup = document.getElementById("set-up")
@@ -15,7 +18,6 @@ copy.addEventListener("click", function () {
     copy.style.border = "2px solid rgb(29, 207, 41)"
     text.style.color = "rgb(29, 207, 41)"
 
-
     setTimeout(function () {
         copy.style.border = "2px solid white"
         text.style.color = "white"
@@ -24,20 +26,13 @@ copy.addEventListener("click", function () {
 
 
 cut.addEventListener("click", function () {
-    const xhr = new XMLHttpRequest();
-    xhr.open("POST", '/', true);
-
     data = "url=" + input.value
+    sendPOST("/", data)
 
-    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-
-    xhr.onreadystatechange = () => { // Call a function when the state changes.
-        if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-            res = xhr.responseText.substring(xhr.responseText.indexOf("</html>") + "</html>".length)
-            text.innerHTML = "localhost:8081/" + res
-        }
-    }
-    xhr.send(data);
+    if (result != null)
+        text.innerHTML = "localhost:8081/" + result
+    else
+        alert("Current path already exists. You can't set up another name for it!")
 })
 
 setup.addEventListener("click", function () {
@@ -46,45 +41,30 @@ setup.addEventListener("click", function () {
     if (value == null) {
         alert("Error, a name can not be null")
     } else {
-        const xhr = new XMLHttpRequest();
-        xhr.open("POST", '/', true);
-
         data = "url=" + input.value + "&name=" + value
+        sendPOST("/", data)
 
-        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-
-        xhr.onreadystatechange = () => { // Call a function when the state changes.
-            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-                res = xhr.responseText.substring(xhr.responseText.indexOf("</html>") + "</html>".length)
-                if (res === "") {
-                    alert("Error! Current path already exists")
-                } else {
-                    text.innerHTML = "localhost:8081/" + value
-                }
-            }
-        }
-        xhr.send(data);
+        if (result != null || result !== "")
+            text.innerHTML = "localhost:8081/" + result
+        else
+            alert("Current path already exists. You can't set up another name for it!")
     }
 })
 
-const xhr = new XMLHttpRequest();
-xhr.open("POST", '/', true);
+d = "phrase=" + window.location.pathname.slice(1)
+sendPOST("/", d)
+if (result != null) {
+    window.location.href = r
+}
 
-data = "phrase=" + window.location.pathname.slice(1)
-xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-xhr.onreadystatechange = () => { // Call a function when the state changes.
-    if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-        res = xhr.responseText.substring(xhr.responseText.indexOf("</html>") + "</html>".length)
-        if (res !== "") {
-            window.location.href = res
+
+function sendPOST(ULR, data) {
+    xhr.open("POST", URL, true);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr.onreadystatechange = () => { // Call a function when the state changes.
+        if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+            result = xhr.responseText.substring(xhr.responseText.indexOf("</html>") + "</html>".length)
         }
     }
+    xhr.send(data);
 }
-xhr.send(data);
-
-// var xmlHttp = new XMLHttpRequest();
-// xmlHttp.open("GET", window.location.pathname, false); // false for synchronous request
-// console.log(window.location.pathname)
-// xmlHttp.send(null);
-// res = xmlHttp.responseText.substring(xmlHttp.responseText.indexOf("</html>") + "</html>".length)
-// console.log(res)

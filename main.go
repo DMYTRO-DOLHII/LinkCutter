@@ -25,7 +25,8 @@ func entry(w http.ResponseWriter, r *http.Request) {
 		r.ParseForm()
 
 		if r.Form.Get("url") != "" && r.Form.Get("name") != "" {
-			if storage.existKey(r.Form.Get("name")) {
+			if storage.existURL(r.Form.Get("url")) {
+				w.Write([]byte(storage.getKey(r.Form.Get("url"))))
 				return
 			}
 			storage.put(r.Form.Get("name"), r.Form.Get("url"))
@@ -34,6 +35,7 @@ func entry(w http.ResponseWriter, r *http.Request) {
 
 			if storage.existURL(r.Form.Get("url")) {
 				w.Write([]byte(storage.getKey(r.Form.Get("url"))))
+				return
 			}
 
 			gen := generate()
@@ -56,6 +58,8 @@ func entry(w http.ResponseWriter, r *http.Request) {
 		} else {
 			log.Printf("There is not such a parameter...")
 		}
+
+		storage.printStorage()
 	}
 
 }
