@@ -7,12 +7,14 @@ font-family: 'Lexend Deca', sans-serif;
 */
 
 body {
+    margin: 0 auto;
     display: flex;
     justify-content: center;
     align-items: center;
     background-color: #141E30;
-    background: linear-gradient(to right, #24243e, #141E30, #0f0c29);
-    
+    background: linear-gradient(144deg, rgba(0,11,57,1) 15%, rgba(227,41,255,1) 100%);
+    max-width: 1200px;
+    height: 100vh;
 }
 
 .center {
@@ -32,7 +34,7 @@ h1 {
 
 h1 {
     position: relative;
-    background: linear-gradient(to right, #24243e, #141E30, #0f0c29);
+    background: linear-gradient(144deg, rgba(0,11,57,1) 0%, rgba(227,41,255,1) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }

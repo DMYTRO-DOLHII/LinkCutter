@@ -26,33 +26,31 @@ func entry(w http.ResponseWriter, r *http.Request) {
 
 		if r.Form.Get("url") != "" && r.Form.Get("name") != "" {
 			if storage.existURL(r.Form.Get("url")) {
-				w.Write([]byte(storage.getKey(r.Form.Get("url"))))
+				w.Write([]byte(""))
 				return
 			}
+
 			storage.put(r.Form.Get("name"), r.Form.Get("url"))
 			w.Write([]byte(r.Form.Get("name")))
 		} else if r.Form.Get("url") != "" {
-
 			if storage.existURL(r.Form.Get("url")) {
 				w.Write([]byte(storage.getKey(r.Form.Get("url"))))
 				return
 			}
 
 			gen := generate()
-
 			storage.put(gen, r.Form.Get("url"))
 
 			w.Header().Set("Content-Type", "application/json")
-
 			w.Write([]byte(gen))
 		} else if r.Form.Get("phrase") != "" {
 			path := r.Form.Get("phrase")
 
 			if storage.existKey(path) {
 				w.Header().Set("Content-Type", "application/json")
-				url := storage.findURL(path)
-				w.Write([]byte(url))
+				w.Write([]byte(storage.findURL(path)))
 			} else {
+				w.Write([]byte(""))
 				return
 			}
 		} else {
@@ -62,6 +60,24 @@ func entry(w http.ResponseWriter, r *http.Request) {
 		storage.printStorage()
 	}
 
+}
+
+func del(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "POST" {
+		r.ParseForm()
+
+		if r.Form.Get("url") != "" {
+			if storage.existURL(r.Form.Get("url")) {
+				delete(storage.storage, r.Form.Get("url"))
+			} else {
+				w.Write([]byte(""))
+				return
+			}
+		} else {
+			w.Write([]byte(""))
+			return
+		}
+	}
 }
 
 func main() {

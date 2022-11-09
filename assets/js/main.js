@@ -1,11 +1,12 @@
 const xhr = new XMLHttpRequest();
-let result
 
 let input = document.getElementById("url")
 let cut = document.getElementById("cut")
 let setup = document.getElementById("set-up")
 let copy = document.getElementById("clipboard")
+let del = document.getElementById("delete")
 let text = document.getElementById("copy-text")
+
 
 
 copy.addEventListener("click", function () {
@@ -15,7 +16,7 @@ copy.addEventListener("click", function () {
         console.error('Failed to copy: ', err);
     }
 
-    copy.style.border = "2px solid rgb(29, 207, 41)"
+    copy.style.border = "4px solid rgb(29, 207, 41)"
     text.style.color = "rgb(29, 207, 41)"
 
     setTimeout(function () {
@@ -27,12 +28,20 @@ copy.addEventListener("click", function () {
 
 cut.addEventListener("click", function () {
     data = "url=" + input.value
-    sendPOST("/", data)
 
-    if (result != null)
-        text.innerHTML = "localhost:8081/" + result
-    else
-        alert("Current path already exists. You can't set up another name for it!")
+    xhr.open("POST", URL, true);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr.onreadystatechange = () => { // Call a function when the state changes.
+        if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+            result = xhr.responseText.substring(xhr.responseText.indexOf("</html>") + "</html>".length)
+
+            if (result !== "")
+                text.innerHTML = "localhost:8081/" + result
+            else
+                alert("Current url already exists. You can't set up another name for it. You can delete it and then set up.")
+        }
+    }
+    xhr.send(data);
 })
 
 setup.addEventListener("click", function () {
@@ -42,29 +51,52 @@ setup.addEventListener("click", function () {
         alert("Error, a name can not be null")
     } else {
         data = "url=" + input.value + "&name=" + value
-        sendPOST("/", data)
 
-        if (result != null || result !== "")
-            text.innerHTML = "localhost:8081/" + result
-        else
-            alert("Current path already exists. You can't set up another name for it!")
+        xhr.open("POST", URL, true);
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhr.onreadystatechange = () => { // Call a function when the state changes.
+            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                result = xhr.responseText.substring(xhr.responseText.indexOf("</html>") + "</html>".length)
+
+                if (result !== "")
+                    text.innerHTML = "localhost:8081/" + result
+                else
+                    alert("Current url already exists. You can't set up another name for it. You can delete it and then set up.")
+            }
+        }
+        xhr.send(data);
     }
 })
 
+del.addEventListener("click", function(){
+    
+})
+
 d = "phrase=" + window.location.pathname.slice(1)
-sendPOST("/", d)
-if (result != null) {
-    window.location.href = r
-}
+xhr.open("POST", URL, true);
+xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+xhr.onreadystatechange = () => { // Call a function when the state changes.
+    if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+        let result = xhr.responseText.substring(xhr.responseText.indexOf("</html>") + "</html>".length)
 
+        console.log(result)
+        console.log(typeof result)
 
-function sendPOST(ULR, data) {
-    xhr.open("POST", URL, true);
-    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-    xhr.onreadystatechange = () => { // Call a function when the state changes.
-        if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-            result = xhr.responseText.substring(xhr.responseText.indexOf("</html>") + "</html>".length)
+        if (result !== "") {
+            window.location.href = result
         }
     }
-    xhr.send(data);
 }
+xhr.send(d);
+
+
+// function sendPOST(ULR, data) {
+//     xhr.open("POST", URL, true);
+//     xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+//     xhr.onreadystatechange = () => { // Call a function when the state changes.
+//         if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+//             result = xhr.responseText.substring(xhr.responseText.indexOf("</html>") + "</html>".length)
+//         }
+//     }
+//     xhr.send(data);
+// }
