@@ -29,15 +29,18 @@ copy.addEventListener("click", function () {
 cut.addEventListener("click", function () {
     data = "url=" + input.value
 
-    xhr.open("POST", URL, true);
+    if (input.value == "" || input.value == null) {
+        alert("ULR can't be empty string")
+        return
+    }
+
+    xhr.open("POST", "/cut", true);
     xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     xhr.onreadystatechange = () => { // Call a function when the state changes.
         if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-            result = xhr.responseText.substring(xhr.responseText.indexOf("</html>") + "</html>".length)
-
-            if (result !== "")
-                text.innerHTML = "localhost:8081/" + result
-            else
+            if (xhr.responseText !== "") {
+                text.innerHTML = "localhost:8081/" + xhr.responseText
+            } else
                 alert("Current url already exists. You can't set up another name for it. You can delete it and then set up.")
         }
     }
@@ -45,21 +48,19 @@ cut.addEventListener("click", function () {
 })
 
 setup.addEventListener("click", function () {
-
     let value = prompt("Enter a name for your link : ", "")
-    if (value == null) {
-        alert("Error, a name can not be null")
+
+    if (value == null || input.value == "" || input.value == null) {
+        alert("ULR or Name can't be empty string")
     } else {
         data = "url=" + input.value + "&name=" + value
 
-        xhr.open("POST", URL, true);
+        xhr.open("POST", "/set", true);
         xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
         xhr.onreadystatechange = () => { // Call a function when the state changes.
             if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-                result = xhr.responseText.substring(xhr.responseText.indexOf("</html>") + "</html>".length)
-
-                if (result !== "")
-                    text.innerHTML = "localhost:8081/" + result
+                if (xhr.responseText !== "")
+                    text.innerHTML = "localhost:8081/" + xhr.responseText
                 else
                     alert("Current url already exists. You can't set up another name for it. You can delete it and then set up.")
             }
@@ -68,35 +69,28 @@ setup.addEventListener("click", function () {
     }
 })
 
-del.addEventListener("click", function(){
-    
+del.addEventListener("click", function () {
+    data = "string=" + input.value
+    xhr.open("POST", "/delete", true);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr.onreadystatechange = () => { // Call a function when the state changes.
+        if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+            input.value = ""
+            copy.innerHTML = ""
+        }
+    }
+    xhr.send(data);
 })
 
 d = "phrase=" + window.location.pathname.slice(1)
-xhr.open("POST", URL, true);
+xhr.open("POST", "/goto", true);
 xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 xhr.onreadystatechange = () => { // Call a function when the state changes.
     if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-        let result = xhr.responseText.substring(xhr.responseText.indexOf("</html>") + "</html>".length)
-
-        console.log(result)
-        console.log(typeof result)
-
-        if (result !== "") {
-            window.location.href = result
+        if (xhr.responseText !== "") {
+            window.location.href = xhr.responseText
         }
     }
 }
 xhr.send(d);
 
-
-// function sendPOST(ULR, data) {
-//     xhr.open("POST", URL, true);
-//     xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-//     xhr.onreadystatechange = () => { // Call a function when the state changes.
-//         if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-//             result = xhr.responseText.substring(xhr.responseText.indexOf("</html>") + "</html>".length)
-//         }
-//     }
-//     xhr.send(data);
-// }

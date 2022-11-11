@@ -61,7 +61,7 @@ h1:after {
 input {
     border-radius: 5px;
     border: 2px solid white;
-    margin: 5px;
+    margin: 7px;
     background: none;
     color: white;
     font-family: 'Lexend Deca', sans-serif;
@@ -77,13 +77,13 @@ input:focus {
     height: 50px;
 }
 
-#cut, #set-up{
+#cut, #set-up, #delete{
     height: 55px;
     width: 80px;
     transition: .5s;
 }
 
-#cut:hover, #set-up:hover{
+#cut:hover, #set-up:hover, #delete:hover{
     background: white;
     color: #0f0c29;
 }
@@ -96,7 +96,7 @@ input:focus {
 #clipboard{
     margin-top: 50px;
     height: 50px;
-    width: 500px;
+    width: 600px;
     border-radius: 5px;
     border: 2px solid white;
     margin: 5px;
